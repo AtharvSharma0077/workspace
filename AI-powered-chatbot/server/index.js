@@ -1,35 +1,34 @@
 import express from "express";
-import mongoose from "mongoose";
 import cors from "cors";
-import jwt from "jsonwebtoken";
 import bodyParser from "body-parser";
-import dotenv from "dotenv";
 
-dotenv.config();
 const app = express();
-
 app.use(cors());
 app.use(bodyParser.json());
 
-// MongoDB connect
-mongoose.connect(process.env.MONGO_URI)
-  .then(() => console.log("✅ MongoDB connected"))
-  .catch((err) => console.error("❌ Mongo Error:", err));
-
-// Simple user login route
-app.post("/auth/login", (req, res) => {
-  const { username } = req.body;
-  if (!username) return res.status(400).json({ error: "Username required" });
-
-  const token = jwt.sign({ username }, process.env.JWT_SECRET, { expiresIn: "1h" });
-  res.json({ token, username });
-});
-
-// Chat route (mock AI reply)
+// Simple AI-like logic
 app.post("/chat", (req, res) => {
-  const { message } = req.body;
-  res.json({ reply: `AI: ${message} 🤖` });
+  const msg = req.body.message?.toLowerCase() || "";
+  let reply = "I'm not sure I understand 🤔";
+
+ if (msg.includes("hello") || msg.includes("hi")) {
+  reply = "Hello there! 👋 How can I help you today?";
+} else if (msg.includes("your name")) {
+  reply = "I'm your friendly AI chatbot built with Node.js and React 💻";
+} else if (msg.includes("time")) {
+  reply = `The current time is ${new Date().toLocaleTimeString()}`;
+} else if (msg.includes("date")) {
+  reply = `Today's date is ${new Date().toLocaleDateString()}`;
+} else if (msg.includes("capital of india")) {     // ✅ NEW CONDITION
+  reply = "The capital of India is New Delhi 🇮🇳";
+} else if (msg.includes("bye")) {
+  reply = "Goodbye! 👋 Have a great day!";
+} else {
+  reply = "I'm not sure about that 🤔";
+}
+
+
+  res.json({ reply });
 });
 
-const PORT = process.env.PORT || 4000;
-app.listen(PORT, () => console.log(`🚀 Server running on port ${PORT}`));
+app.listen(4000, () => console.log("🚀 Server running on port 4000"));
