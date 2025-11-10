@@ -1,56 +1,86 @@
-import React, { useState } from 'react';
+import React, { useState, useRef, useEffect } from "react";
 
 export default function Chat() {
-  const [message, setMessage] = useState('');
-  const [reply, setReply] = useState('');
+  const [message, setMessage] = useState("");
+  const [messages, setMessages] = useState([]);
+  const [isTyping, setIsTyping] = useState(false);
+  const messagesEndRef = useRef(null);
 
-  const sendMessage = async (e) => {
-    e.preventDefault();
+  useEffect(() => {
+    messagesEndRef.current?.scrollIntoView({ behavior: "smooth" });
+  }, [messages, isTyping]);
 
+  const handleSend = async () => {
     if (!message.trim()) return;
 
-    const res = await fetch('/chat', {
-      method: 'POST',
-      headers: { 'Content-Type': 'application/json' },
-      body: JSON.stringify({ message }),
-    });
+    const newMessages = [...messages, { sender: "user", text: message }];
+    setMessages(newMessages);
+    setMessage("");
+    setIsTyping(true);
 
-    const data = await res.json();
-    setReply(data.reply);
-    setMessage(''); // clear input
+    try {
+      const res = await fetch("http://localhost:4000/chat", {
+        method: "POST",
+        headers: { "Content-Type": "application/json" },
+        body: JSON.stringify({ message }),
+      });
+      const data = await res.json();
+
+      setMessages([
+        ...newMessages,
+        { sender: "bot", text: data.reply || "🤖 No response received." },
+      ]);
+    } catch {
+      setMessages([
+        ...newMessages,
+        { sender: "bot", text: "⚠️ Server error, please try again." },
+      ]);
+    } finally {
+      setIsTyping(false);
+    }
+  };
+
+  const handleKeyDown = (e) => {
+    if (e.key === "Enter") handleSend();
   };
 
   return (
-    <div className="flex items-center justify-center min-h-screen bg-gray-100">
-      <div className="bg-white shadow-lg rounded-2xl p-8 w-[22rem] text-center flex flex-col items-center justify-center">
-        <h1 className="text-2xl font-bold mb-6 text-gray-700">
-          💬 Simple Chatbot
-        </h1>
+    <div className="chat-wrapper">
+      <div className="chat-card">
+        <h1 className="chat-title">💬 Simple Chatbot</h1>
 
-        <form
-          onSubmit={sendMessage}
-          className="flex gap-2 mb-4 w-full justify-center"
-        >
+        <div className="chat-window" role="log" aria-live="polite">
+          {messages.map((msg, i) => (
+            <div
+              key={i}
+              className={`message ${msg.sender === "user" ? "user" : "bot"}`}
+            >
+              {msg.text}
+            </div>
+          ))}
+
+          {isTyping && (
+            <div className="message bot typing">
+              Bot is typing<span className="dots">...</span>
+            </div>
+          )}
+
+          <div ref={messagesEndRef} />
+        </div>
+
+        <div className="chat-input-row">
           <input
+            className="chat-input"
             type="text"
+            placeholder="Type your message..."
             value={message}
             onChange={(e) => setMessage(e.target.value)}
-            placeholder="Type a message..."
-            className="border border-gray-300 rounded-lg px-4 py-2 w-full focus:outline-none focus:ring-2 focus:ring-blue-400"
+            onKeyDown={handleKeyDown}
           />
-          <button
-            type="submit"
-            className="bg-blue-500 text-white px-4 py-2 rounded-lg hover:bg-blue-600 transition"
-          >
+          <button className="chat-send" onClick={handleSend}>
             Send
           </button>
-        </form>
-
-        {reply && (
-          <div className="mt-4 p-3 bg-gray-100 rounded-lg text-gray-800 w-full">
-            {reply}
-          </div>
-        )}
+        </div>
       </div>
     </div>
   );

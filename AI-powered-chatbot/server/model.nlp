@@ -1,0 +1,384 @@
+{
+  "settings": {
+    "languages": [
+      "en"
+    ],
+    "forceNER": true,
+    "tag": "nlp",
+    "threshold": 0.5,
+    "autoLoad": true,
+    "autoSave": true,
+    "modelFileName": "model.nlp",
+    "executeActionsBeforeAnswers": false,
+    "calculateSentiment": true
+  },
+  "nluManager": {
+    "settings": {
+      "tag": "nlu-manager"
+    },
+    "locales": [
+      "en"
+    ],
+    "languageNames": {},
+    "domainManagers": {
+      "en": {
+        "settings": {
+          "locale": "en",
+          "trainByDomain": false,
+          "tag": "domain-manager-en",
+          "nluByDomain": {
+            "default": {
+              "className": "NeuralNlu",
+              "settings": {}
+            }
+          },
+          "useStemDict": true
+        },
+        "stemDict": {
+          "hello": {
+            "intent": "greet.hello",
+            "domain": "default"
+          },
+          "hi": {
+            "intent": "greet.hello",
+            "domain": "default"
+          },
+          "hey": {
+            "intent": "greet.hello",
+            "domain": "default"
+          },
+          "is,name,what,your": {
+            "intent": "bot.name",
+            "domain": "default"
+          },
+          "are,who,you": {
+            "intent": "bot.name",
+            "domain": "default"
+          },
+          "capit,india,is,of,what": {
+            "intent": "info.capital",
+            "domain": "default"
+          },
+          "capit,india,me,of,tell": {
+            "intent": "info.capital",
+            "domain": "default"
+          }
+        },
+        "intentDict": {
+          "greet.hello": "default",
+          "bot.name": "default",
+          "info.capital": "default"
+        },
+        "sentences": [
+          {
+            "domain": "default",
+            "utterance": "hello",
+            "intent": "greet.hello"
+          },
+          {
+            "domain": "default",
+            "utterance": "hi",
+            "intent": "greet.hello"
+          },
+          {
+            "domain": "default",
+            "utterance": "hey",
+            "intent": "greet.hello"
+          },
+          {
+            "domain": "default",
+            "utterance": "what is your name",
+            "intent": "bot.name"
+          },
+          {
+            "domain": "default",
+            "utterance": "who are you",
+            "intent": "bot.name"
+          },
+          {
+            "domain": "default",
+            "utterance": "what is capital of india",
+            "intent": "info.capital"
+          },
+          {
+            "domain": "default",
+            "utterance": "tell me capital of india",
+            "intent": "info.capital"
+          }
+        ],
+        "domains": {
+          "master_domain": {
+            "settings": {
+              "locale": "en",
+              "tag": "nlu-en",
+              "keepStopwords": true,
+              "nonefeatureValue": 1,
+              "nonedeltaMultiplier": 1.2,
+              "spellCheck": false,
+              "spellCheckDistance": 1,
+              "filterZeros": true,
+              "log": true
+            },
+            "features": {
+              "hello": 1,
+              "hi": 1,
+              "hey": 1,
+              "what": 1,
+              "is": 1,
+              "your": 1,
+              "name": 1,
+              "who": 1,
+              "are": 1,
+              "you": 1,
+              "capit": 1,
+              "of": 1,
+              "india": 1,
+              "tell": 1,
+              "me": 1
+            },
+            "intents": {
+              "greet.hello": 1,
+              "bot.name": 1,
+              "info.capital": 1
+            },
+            "intentFeatures": {
+              "greet.hello": {
+                "hello": 1,
+                "hi": 1,
+                "hey": 1
+              },
+              "bot.name": {
+                "what": 1,
+                "is": 1,
+                "your": 1,
+                "name": 1,
+                "who": 1,
+                "are": 1,
+                "you": 1
+              },
+              "info.capital": {
+                "what": 1,
+                "is": 1,
+                "capit": 1,
+                "of": 1,
+                "india": 1,
+                "tell": 1,
+                "me": 1
+              }
+            },
+            "featuresToIntent": {
+              "hello": [
+                "greet.hello"
+              ],
+              "hi": [
+                "greet.hello"
+              ],
+              "hey": [
+                "greet.hello"
+              ],
+              "what": [
+                "bot.name",
+                "info.capital"
+              ],
+              "is": [
+                "bot.name",
+                "info.capital"
+              ],
+              "your": [
+                "bot.name"
+              ],
+              "name": [
+                "bot.name"
+              ],
+              "who": [
+                "bot.name"
+              ],
+              "are": [
+                "bot.name"
+              ],
+              "you": [
+                "bot.name"
+              ],
+              "capit": [
+                "info.capital"
+              ],
+              "of": [
+                "info.capital"
+              ],
+              "india": [
+                "info.capital"
+              ],
+              "tell": [
+                "info.capital"
+              ],
+              "me": [
+                "info.capital"
+              ]
+            },
+            "neuralNetwork": {
+              "settings": {
+                "locale": "en",
+                "tag": "nlu-en",
+                "keepStopwords": true,
+                "nonefeatureValue": 1,
+                "nonedeltaMultiplier": 1.2,
+                "spellCheck": false,
+                "spellCheckDistance": 1,
+                "filterZeros": true,
+                "log": true
+              },
+              "features": [
+                "hello",
+                "hi",
+                "hey",
+                "what",
+                "is",
+                "your",
+                "name",
+                "who",
+                "are",
+                "you",
+                "capit",
+                "of",
+                "india",
+                "tell",
+                "me"
+              ],
+              "intents": [
+                "greet.hello",
+                "bot.name",
+                "info.capital"
+              ],
+              "perceptrons": [
+                [
+                  6.737043857574463,
+                  6.82673454284668,
+                  6.755473613739014,
+                  -2.030332088470459,
+                  -2.030332088470459,
+                  -1.6288479566574097,
+                  -1.6288479566574097,
+                  -2.427399158477783,
+                  -2.427399158477783,
+                  -2.427399158477783,
+                  -1.6253236532211304,
+                  -1.6253236532211304,
+                  -1.6253236532211304,
+                  -1.2238401174545288,
+                  -1.2238401174545288,
+                  7.340967532447107
+                ],
+                [
+                  -1.2911614179611206,
+                  -1.2742506265640259,
+                  -1.2571961879730225,
+                  2.303825855255127,
+                  2.303825855255127,
+                  4.175381183624268,
+                  4.175381183624268,
+                  4.313482761383057,
+                  4.313482761383057,
+                  4.313482761383057,
+                  -1.9921807050704956,
+                  -1.9921807050704956,
+                  -1.9921807050704956,
+                  -0.10125640034675598,
+                  -0.10125640034675598,
+                  1.3227957492137838
+                ],
+                [
+                  -0.4626505970954895,
+                  -0.45407193899154663,
+                  -0.44603607058525085,
+                  1.1774547100067139,
+                  1.1774547100067139,
+                  -1.339555025100708,
+                  -1.339555025100708,
+                  -0.2202787548303604,
+                  -0.2202787548303604,
+                  -0.2202787548303604,
+                  3.798490047454834,
+                  3.798490047454834,
+                  3.798490047454834,
+                  1.2742031812667847,
+                  1.2742031812667847,
+                  0.41315571440362625
+                ]
+              ]
+            }
+          }
+        }
+      }
+    },
+    "intentDomains": {},
+    "extraSentences": [
+      [
+        "en",
+        "hello"
+      ],
+      [
+        "en",
+        "hi"
+      ],
+      [
+        "en",
+        "hey"
+      ],
+      [
+        "en",
+        "what is your name"
+      ],
+      [
+        "en",
+        "who are you"
+      ],
+      [
+        "en",
+        "what is capital of india"
+      ],
+      [
+        "en",
+        "tell me capital of india"
+      ]
+    ]
+  },
+  "ner": {
+    "settings": {
+      "tag": "ner",
+      "entityPreffix": "%",
+      "entitySuffix": "%"
+    },
+    "rules": {}
+  },
+  "nlgManager": {
+    "settings": {
+      "tag": "nlg-manager"
+    },
+    "responses": {
+      "en": {
+        "greet.hello": [
+          {
+            "answer": "Hello there 👋!"
+          }
+        ],
+        "bot.name": [
+          {
+            "answer": "I'm your friendly AI chatbot 🤖 built with Node.js!"
+          }
+        ],
+        "info.capital": [
+          {
+            "answer": "The capital of India is New Delhi 🇮🇳"
+          }
+        ]
+      }
+    }
+  },
+  "actionManager": {
+    "settings": {
+      "tag": "action-manager"
+    },
+    "actions": {}
+  },
+  "slotManager": {}
+}

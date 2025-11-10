@@ -1,0 +1,12 @@
+{
+  "dependencies": {
+    "body-parser": "^2.2.0",
+    "cors": "^2.8.5",
+    "express": "^5.1.0",
+    "mammoth": "^1.11.0",
+    "natural": "^8.1.0",
+    "node-nlp": "^5.0.0-alpha.5",
+    "openai": "^6.8.1",
+    "textract": "^2.5.0"
+  }
+}

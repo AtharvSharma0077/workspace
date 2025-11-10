@@ -1,34 +1,71 @@
 import express from "express";
 import cors from "cors";
-import bodyParser from "body-parser";
+import fs from "fs";
+import natural from "natural";
 
 const app = express();
+const PORT = 4000;
+
 app.use(cors());
-app.use(bodyParser.json());
+app.use(express.json());
 
-// Simple AI-like logic
-app.post("/chat", (req, res) => {
-  const msg = req.body.message?.toLowerCase() || "";
-  let reply = "I'm not sure I understand 🤔";
+let documentText = "";
 
- if (msg.includes("hello") || msg.includes("hi")) {
-  reply = "Hello there! 👋 How can I help you today?";
-} else if (msg.includes("your name")) {
-  reply = "I'm your friendly AI chatbot built with Node.js and React 💻";
-} else if (msg.includes("time")) {
-  reply = `The current time is ${new Date().toLocaleTimeString()}`;
-} else if (msg.includes("date")) {
-  reply = `Today's date is ${new Date().toLocaleDateString()}`;
-} else if (msg.includes("capital of india")) {     // ✅ NEW CONDITION
-  reply = "The capital of India is New Delhi 🇮🇳";
-} else if (msg.includes("bye")) {
-  reply = "Goodbye! 👋 Have a great day!";
-} else {
-  reply = "I'm not sure about that 🤔";
+// 🗂 Load text file
+try {
+  documentText = fs.readFileSync("./uploads/data.txt", "utf8");
+  console.log("📄 Text file loaded successfully.");
+} catch (err) {
+  console.error("❌ Error loading text file:", err.message);
 }
 
+// 🧠 Chat route
+app.post("/chat", async (req, res) => {
+  try {
+    const userQuery = req.body.message?.toLowerCase();
+    if (!userQuery) return res.json({ reply: "⚠️ Please type something first." });
 
-  res.json({ reply });
+    if (!documentText) {
+      return res.json({ reply: "❌ No document loaded. Please add a .txt file in /uploads folder." });
+    }
+
+    // Split into sentences instead of full lines
+    const sentences = documentText.split(/(?<=[.?!])\s+/);
+
+    // TF-IDF similarity
+    const tfidf = new natural.TfIdf();
+    sentences.forEach((s) => tfidf.addDocument(s));
+
+    let bestIndex = -1;
+    let bestScore = 0;
+
+    tfidf.tfidfs(userQuery, (i, measure) => {
+      if (measure > bestScore) {
+        bestScore = measure;
+        bestIndex = i;
+      }
+    });
+
+    if (bestScore < 0.05) {
+      return res.json({ reply: "🤔 Sorry, I couldn't find relevant info in the document." });
+    }
+
+    // Context lines
+    const context = [
+      sentences[bestIndex - 1] || "",
+      sentences[bestIndex],
+      sentences[bestIndex + 1] || "",
+    ]
+      .join(" ")
+      .replace(/\s+/g, " ")
+      .trim();
+
+    res.json({ reply: context });
+  } catch (error) {
+    console.error("❌ Error in chat endpoint:", error);
+    res.status(500).json({ reply: "Internal server error." });
+  }
 });
 
-app.listen(4000, () => console.log("🚀 Server running on port 4000"));
+// 🚀 Server start
+app.listen(PORT, () => console.log(`🚀 Server running at http://localhost:${PORT}`));
